@@ -21,7 +21,7 @@ const Multimedia = (props) => {
     }
   };
 
-  const capture = useCallback(async() => {
+  const capture = useCallback(async () => {
     const imageSrc = webcamRef.current.getScreenshot();
     setImgSrc(imageSrc);
     const config = {
