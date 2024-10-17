@@ -1,0 +1,36 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.custom-scroll::-webkit-scrollbar-track
+{
+	border-radius: 10px;
+	background-color: #F5F5F5;
+}
+
+.custom-scroll::-webkit-scrollbar
+{
+	width: 8px;
+	background-color: #ffffff;
+}
+
+.custom-scroll::-webkit-scrollbar-thumb
+{
+	border-radius: 10px;
+	-webkit-box-shadow: inset 0 0 6px rgba(0,0,0,.3);
+	background-color: #555;
+}
+.signature{
+	width: 150px;
+	height: 150px;
+}
+input[type=number]::-webkit-inner-spin-button,
+input[type=number]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+/* For Firefox */
+input[type=number] {
+    -moz-appearance: textfield;
+}
