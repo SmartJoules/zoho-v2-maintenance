@@ -12,6 +12,8 @@ const Multimedia = (props) => {
   const [videoSrc, setVideoSrc] = useState(`https://creatorapp.zohopublic.in${props.video}`.replace("api", "publishapi") + `&privatelink=q52rRrGjs3HzqO2GjTB28AvBeqgmKVMkma5HDOUxYwpq1Km45hJaRHn3q6Bukj4m0C1Zgq2gM1xg4wFKvrez60A7x2C7aMFxbO3V`);
   const webcamRef = useRef(null);
   const [facingMode, setFacingMode] = useState("user");
+  const fileInputRef = useRef(null);
+
 
   const handleLabelClick = () => {
     if (fileInputRef.current) {
@@ -19,9 +21,23 @@ const Multimedia = (props) => {
     }
   };
 
-  const capture = useCallback(() => {
+  const capture = useCallback(async() => {
     const imageSrc = webcamRef.current.getScreenshot();
     setImgSrc(imageSrc);
+    const config = {
+      appName: "smart-joules-app",
+      reportName: "All_Maintenance_Scheduler_Task_List_Records",
+      id: props.id,
+      fieldName: "Image",
+      file: imageSrc
+    }
+    try {
+      await ZOHO.CREATOR.init();
+      const resp = await ZOHO.CREATOR.API.uploadFile(config);
+      handleClose();
+    } catch (error) {
+      console.log(error);
+    }
     setIsCameraModalOpen(false);
   }, [webcamRef]);
 
