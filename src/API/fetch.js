@@ -42,12 +42,13 @@ const getMaintenanceRecords = async (status, start_date, end_date) => {
                 const countRec = await count(status, start_date, end_date);
                 const iteration = Math.ceil(parseInt(!isNaN(countRec)) / 200);
                 for (let j = 0; j < iteration; j++) {
+                    const page_no = j+ 1;
                     const config = {
                         appName: "smart-joules-app",
                         reportName: "Maintenance_Scheduler_Report",
                         criteria: `Status == "${status}" && Start_Date >= "${start_date}" && Start_Date <= "${end_date}" && Site_Name == ${user_obj.Sites[i].ID}`,
                         pageSize: 200,
-                        page: j++
+                        page: page_no
                     };
                     try {
                         const response = await ZOHO.CREATOR.API.getAllRecords(config);
