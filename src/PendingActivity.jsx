@@ -4,7 +4,7 @@ import Modal from './Modal';
 import Filter from './Filter';
 import { Scanner } from '@yudiel/react-qr-scanner';
 import getMaintenanceRecords from './API/fetch';
-const ActivityCard = lazy(() => import('./ActivityCard'));
+import ActivityCard from './ActivityCard';
 import fetchByArea from './API/fetchByArea';
 
 const PendingActivity = ({ toggleTaskTab, startAndEndDate, filterDate }) => {
@@ -12,6 +12,7 @@ const PendingActivity = ({ toggleTaskTab, startAndEndDate, filterDate }) => {
     const [searchText, setSearchText] = useState('');
     const [isOpen, setIsOpen] = useState(false);
     const [isQrModal, setIsQrModalOpen] = useState(false);
+    const [isLoading, setIsLoading] = useState(false);
 
     const handleClose = () => {
         setIsOpen(false);
@@ -20,8 +21,10 @@ const PendingActivity = ({ toggleTaskTab, startAndEndDate, filterDate }) => {
 
     useEffect(() => {
         const getRecords = async () => {
+            setIsLoading(true);
             const allRecords = await getMaintenanceRecords("Pending", startAndEndDate.start_date, startAndEndDate.end_date);
             setPendingRecords(allRecords);
+            setIsLoading(false);
         }
         getRecords();
     }, [startAndEndDate]);
@@ -41,7 +44,10 @@ const PendingActivity = ({ toggleTaskTab, startAndEndDate, filterDate }) => {
 
     return (
         <>
-            <div className="bg-slate-100 overflow-y-auto overflow-x-hidden custom-scroll flex flex-col flex-1">
+        {
+            isLoading === false ? 
+            (
+                <div className="bg-slate-100 overflow-y-auto overflow-x-hidden custom-scroll flex flex-col flex-1">
                 <div className="sticky top-0 p-2 bg-slate-100 flex gap-2">
                     <Input icon placeholder='Search...' onChange={e => setSearchText(e.target.value)} className='w-full' value={searchText}>
                         <input />
@@ -74,7 +80,6 @@ const PendingActivity = ({ toggleTaskTab, startAndEndDate, filterDate }) => {
                     </Modal>
                 </div>
                 <div className=''>
-                    <Suspense fallback={<div>Loading...</div>}>
                         {pendingRecords &&
                             pendingRecords.length > 0 ? (
                             pendingRecords
@@ -98,9 +103,15 @@ const PendingActivity = ({ toggleTaskTab, startAndEndDate, filterDate }) => {
                         ) : (
                             <></>
                         )}
-                    </Suspense>
                 </div>
             </div>
+            )
+            :
+            (
+                <div className='text-center p-2'>Loading...</div>
+            )
+        }
+           
         </>
     );
 }

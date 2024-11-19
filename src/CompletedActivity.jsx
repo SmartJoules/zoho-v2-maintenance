@@ -7,17 +7,23 @@ const PendingActivity = (props) => {
 
     const [completedRecords, setCompletedRecords] = useState([]);
     const [searchText, setSearchText] = useState("");
+    const [isLoading, setIsLoading ] = useState(false);
 
     useEffect(() => {
         const getRecords = async () => {
+            setIsLoading(true);
             const allRecords = await getMaintenanceRecords("Completed",props.startAndEndDate.start_date,props.startAndEndDate.end_date);
             setCompletedRecords(allRecords);
+            setIsLoading(false);
         }
         getRecords();
     }, [props.startAndEndDate]);
     return (
         <>
-            <div className="bg-slate-100 overflow-y-auto custom-scroll flex flex-col flex-1">
+        {
+            isLoading == false?
+            (
+                <div className="bg-slate-100 overflow-y-auto custom-scroll flex flex-col flex-1">
                 <div className="sticky top-0 p-2 bg-slate-100">
                 <Input icon placeholder='Search...' onChange={e => setSearchText(e.target.value)} className='w-full' value={searchText}>
                         <input />
@@ -25,7 +31,6 @@ const PendingActivity = (props) => {
                     </Input>
                 </div>
                 <div className=''>
-                    <Suspense fallback={<div>Loading...</div>}>
                         {
                             completedRecords.length > 0 ? (
                                 completedRecords.filter(record => {
@@ -48,10 +53,17 @@ const PendingActivity = (props) => {
                                     <div className='text-center'>No Records Found</div>
                                 )
                         }
-                    </Suspense>
+                    
 
                 </div>
             </div>
+            )
+            :
+            (
+                <div className='text-center p-2'>Loading...</div>
+            )
+        }
+          
         </>
     )
 }

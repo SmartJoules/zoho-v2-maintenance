@@ -1,3 +1,5 @@
+import count from "./count";
+
 const getMaintenanceRecords = async (status, start_date, end_date) => {
     await ZOHO.CREATOR.init();
     const initparams = await ZOHO.CREATOR.UTIL.getInitParams();
@@ -11,25 +13,17 @@ const getMaintenanceRecords = async (status, start_date, end_date) => {
         const userResp = await ZOHO.CREATOR.API.getAllRecords(userConfig);
         const user_obj = userResp.data[0];
         if (user_obj.Role.display_value === "Admin") {
-            const config = {
-                appName: "smart-joules-app",
-                reportName: "Maintenance_Scheduler_Report",
-                criteria: `Status == "${status}" && Start_Date >= "${start_date}" && Start_Date <= "${end_date}"`,
-            };
-            try {
-                const response = await ZOHO.CREATOR.API.getAllRecords(config);
-                return response.data;
-            } catch (error) {
-                console.log(error);
-            }
-        }
-        else {
             let records = [];
-            for (let i = 0; i < user_obj.Sites.length; i++) {
+            const countRec = await count(status, start_date, end_date);
+            const iteration = Math.ceil(parseInt(!isNaN(countRec) ? countRec: 0) / 200);
+            for (let i = 0; i < iteration; i++) {
+                const page_no = i+ 1;
                 const config = {
                     appName: "smart-joules-app",
                     reportName: "Maintenance_Scheduler_Report",
-                    criteria: `Status == "${status}" && Start_Date >= "${start_date}" && Start_Date <= "${end_date}" && Site_Name == ${user_obj.Sites[i].ID}`,
+                    criteria: `Status == "${status}" && Start_Date >= "${start_date}" && Start_Date <= "${end_date}"`,
+                    pageSize: 200,
+                    page: page_no
                 };
                 try {
                     const response = await ZOHO.CREATOR.API.getAllRecords(config);
@@ -38,6 +32,32 @@ const getMaintenanceRecords = async (status, start_date, end_date) => {
                 } catch (error) {
                     console.log(error);
                 }
+            }
+            return records;
+            
+        }
+        else {
+            let records = [];
+            for (let i = 0; i < user_obj.Sites.length; i++) {
+                const countRec = await count(status, start_date, end_date);
+                const iteration = Math.ceil(parseInt(!isNaN(countRec)) / 200);
+                for (let j = 0; j < iteration; j++) {
+                    const config = {
+                        appName: "smart-joules-app",
+                        reportName: "Maintenance_Scheduler_Report",
+                        criteria: `Status == "${status}" && Start_Date >= "${start_date}" && Start_Date <= "${end_date}" && Site_Name == ${user_obj.Sites[i].ID}`,
+                        pageSize: 200,
+                        page: j++
+                    };
+                    try {
+                        const response = await ZOHO.CREATOR.API.getAllRecords(config);
+                        const each_data = response.data.map(record => record);
+                        records = [...records, ...each_data];
+                    } catch (error) {
+                        console.log(error);
+                    }
+                }
+
             }
             return records;
         }
