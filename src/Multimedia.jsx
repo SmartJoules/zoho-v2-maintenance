@@ -1,6 +1,7 @@
 import React, { useState, useRef, useCallback } from 'react';
 import Modal from './Modal';
 import Webcam from "react-webcam";
+import dataToBlog from './DataURItoBlob';
 
 const Multimedia = (props) => {
   const [isCameraModalOpen, setIsCameraModalOpen] = useState(false);
@@ -11,7 +12,7 @@ const Multimedia = (props) => {
   const [audioSrc, setAudioSrc] = useState(`https://creatorapp.zohopublic.in${props.audio}`.replace("api", "publishapi") + `&privatelink=q52rRrGjs3HzqO2GjTB28AvBeqgmKVMkma5HDOUxYwpq1Km45hJaRHn3q6Bukj4m0C1Zgq2gM1xg4wFKvrez60A7x2C7aMFxbO3V`);
   const [videoSrc, setVideoSrc] = useState(`https://creatorapp.zohopublic.in${props.video}`.replace("api", "publishapi") + `&privatelink=q52rRrGjs3HzqO2GjTB28AvBeqgmKVMkma5HDOUxYwpq1Km45hJaRHn3q6Bukj4m0C1Zgq2gM1xg4wFKvrez60A7x2C7aMFxbO3V`);
   const webcamRef = useRef(null);
-  const [facingMode, setFacingMode] = useState("user");
+  const [facingMode, setFacingMode] = useState("environment");
   const fileInputRef = useRef(null);
 
 
@@ -22,7 +23,9 @@ const Multimedia = (props) => {
   };
 
   const capture = useCallback(async () => {
-    const imageSrc = webcamRef.current.getScreenshot();
+    let imageSrc = webcamRef.current.getScreenshot();
+     imageSrc = dataToBlog(imageSrc);
+
     setImgSrc(imageSrc);
     const config = {
       appName: "smart-joules-app",

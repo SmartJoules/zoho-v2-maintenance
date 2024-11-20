@@ -13,6 +13,7 @@ const PendingTask = (props) => {
     const [isOpen, setIsOpen] = useState(false);
     const [signature, setSignature] = useState(null);
     const sigRef = useRef(null);
+    const [show, setShow] = useState(false);
 
     const handleSignatureEnd = () => {
         if (sigRef.current) {
@@ -51,6 +52,8 @@ const PendingTask = (props) => {
     const handleClick = async () => {
        await upDateStatus(props.maintenance_id);
        await updateSignature(signature,props.maintenance_id);
+       setIsOpen(false);
+       setShow(true);
     }
 
     const handleClose = () => {
@@ -88,6 +91,13 @@ const PendingTask = (props) => {
                     <div className='border-t flex justify-center gap-2 p-2 rounded-b-md'>
                         <button onClick={handleClick} className='bg-blue-600 p-2 rounded-md text-sm text-white shadow-sm'>Confirm</button>
                         <button onClick={() => setIsOpen(false)} className='bg-gray-500 p-2 rounded-md text-sm text-white shadow-sm'>Close</button>
+                    </div>
+                </Modal>
+                <Modal status={show}>
+                    <div className='text-center font-bold'>Data Successfully Submitted</div>
+                    <div className='flex justify-center gap-3'>
+                        <button onClick={()=>setShow(false)} className='p-2 bg-blue-600 text-white rounded'>Close</button>
+                        <button onClick={()=> props.toggleActivityTab()} className='p-2 bg-blue-600 text-white rounded'>Go Back</button>
                     </div>
                 </Modal>
 
