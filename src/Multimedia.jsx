@@ -25,7 +25,6 @@ const Multimedia = (props) => {
   const capture = useCallback(async () => {
     let imageSrc = webcamRef.current.getScreenshot();
      imageSrc = dataToBlog(imageSrc);
-
     setImgSrc(imageSrc);
     const config = {
       appName: "smart-joules-app",
@@ -107,11 +106,12 @@ const Multimedia = (props) => {
               <Webcam
                 audio={false}
                 ref={webcamRef}
-                height={720}
+                height={1440}
                 screenshotFormat="image/jpeg"
                 screenshotQuality={0.4}
-                width={1280}
+                width={1080}
                 videoConstraints={videoConstraints}
+                className='h-[80vh] w-full'
               />
               <div className=' p-2'>
                 <div className='flex gap-[20px] justify-center'>

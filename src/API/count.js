@@ -1,8 +1,8 @@
-const count = async (status , start_date , end_date) => {
+const count = async (criteria, reportName) => {
     const config = {
       appName: "smart-joules-app",
-      reportName: "Maintenance_Scheduler_Report",
-      criteria: `Status == "${status}" && Start_Date >= "${start_date}" && Start_Date <= "${end_date}"`
+      reportName : reportName,
+      criteria : criteria
     }
     try {
       await ZOHO.CREATOR.init();

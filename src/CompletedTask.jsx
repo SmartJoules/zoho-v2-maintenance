@@ -16,6 +16,7 @@ const PendingTask = (props) => {
                 try {
                     await ZOHO.CREATOR.init();
                     const resp = await ZOHO.CREATOR.API.getAllRecords(config);
+                    props.setCompletedCount(resp.data.length);
                     setTaskArr(resp.data);
                 }
                 catch (err) {
